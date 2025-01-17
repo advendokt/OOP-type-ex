@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Todo } from '../models/todo'
 import { hasUncaughtExceptionCaptureCallback } from "process";
+import { error } from "console";
 
 const todos: Todo[] = []
 
@@ -45,6 +46,25 @@ export const updateTodo = (req: Request, res:Response, next: NextFunction) => {
             updatedTask: todos[todoIndex]
         })
     }   catch(error){
+        console.log(error)
+    }
+}
+
+export const deleteTodo = (req: Request, res:Response, next: NextFunction) => {
+    try {
+        const todoId = req.params.id
+        const todoIndex = todos.findIndex(todo => todo.id === todoId)
+
+        if(todoIndex < 0) {
+            throw new Error('Cloud not find todo with such id')
+        }
+
+        todos.splice(todoIndex, 1)
+
+        res.status(201).json({
+            message: 'Todo is deleted!',
+        })
+    }   catch(error) {
         console.log(error)
     }
 }
